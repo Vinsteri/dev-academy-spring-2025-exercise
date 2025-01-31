@@ -1,7 +1,7 @@
-# app/routers/electricity.py
 from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from typing import List
 from app.database import get_db
 from app.schemas import (
@@ -26,29 +26,30 @@ def get_daily_stats(db: Session = Depends(get_db)):
     """
     # You can do this as a single SQL query or with a combination
     # of SQLAlchemy queries. Below is a raw SQL approach:
-    raw_sql = """
+    raw_sql = text(
+        """
         SELECT d.date,
-               SUM(d."consumptionAmount") AS total_consumption,
-               SUM(d."productionAmount") AS total_production,
-               AVG(d."hourlyPrice") AS average_price,
+               SUM(d."consumptionamount") AS total_consumption,
+               SUM(d."productionamount") AS total_production,
+               AVG(d."hourlyprice") AS average_price,
                (
                    SELECT MAX(consecutive_hours)
                    FROM (
                        SELECT
                            COUNT(*) AS consecutive_hours,
-                           MIN("hourlyPrice") as min_price
+                           MIN("hourlyprice") as min_price
                        FROM (
                            SELECT e."date",
-                                  e."startTime",
-                                  e."hourlyPrice",
-                                  SUM(CASE WHEN "hourlyPrice" < 0 THEN 0 ELSE 1 END)
-                                  OVER (PARTITION BY e."date" ORDER BY e."startTime"
+                                  e."starttime",
+                                  e."hourlyprice",
+                                  SUM(CASE WHEN "hourlyprice" < 0 THEN 0 ELSE 1 END)
+                                  OVER (PARTITION BY e."date" ORDER BY e."starttime"
                                         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as breaker
                            FROM electricitydata e
                            WHERE e."date" = d."date"
-                           ORDER BY e."startTime"
+                           ORDER BY e."starttime"
                        ) x
-                       WHERE x."hourlyPrice" < 0
+                       WHERE x."hourlyprice" < 0
                        GROUP BY x.breaker
                    ) y
                ) AS longest_negative_price_streak
@@ -56,6 +57,7 @@ def get_daily_stats(db: Session = Depends(get_db)):
         GROUP BY d.date
         ORDER BY d.date
     """
+    )
     rows = db.execute(raw_sql).fetchall()
 
     results = []
@@ -82,9 +84,9 @@ def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
     summary_sql = """
         SELECT 
             date,
-            SUM("consumptionAmount") AS total_consumption,
-            SUM("productionAmount") AS total_production,
-            AVG("hourlyPrice") AS average_price
+            SUM("consumptionamount") AS total_consumption,
+            SUM("productionamount") AS total_production,
+            AVG("hourlyprice") AS average_price
         FROM electricitydata
         WHERE date = :selected_date
         GROUP BY date
@@ -107,8 +109,8 @@ def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
 
     # 2) Hour with max consumption-production difference
     max_diff_sql = """
-        SELECT "startTime",
-               ("consumptionAmount" - "productionAmount") AS diff
+        SELECT "starttime",
+               ("consumptionamount" - "productionamount") AS diff
         FROM electricitydata
         WHERE date = :selected_date
         ORDER BY diff DESC NULLS LAST
@@ -118,7 +120,7 @@ def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
     maxConsumptionVsProduction = None
     if max_diff_row:
         maxConsumptionVsProduction = HourDetail(
-            startTime=max_diff_row[0],
+            starttime=max_diff_row[0],
             consumption_production_diff=(
                 float(max_diff_row[1]) if max_diff_row[1] else 0.0
             ),
@@ -126,10 +128,10 @@ def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
 
     # 3) Cheapest hours (top 3)
     cheapest_sql = """
-        SELECT "startTime", "hourlyPrice"
+        SELECT "starttime", "hourlyprice"
         FROM electricitydata
         WHERE date = :selected_date
-        ORDER BY "hourlyPrice" ASC NULLS LAST
+        ORDER BY "hourlyprice" ASC NULLS LAST
         LIMIT 3
     """
     cheapest_rows = db.execute(
@@ -137,7 +139,7 @@ def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
     ).fetchall()
 
     cheapestHours = [
-        HourPrice(startTime=row[0], hourlyPrice=float(row[1]) if row[1] else 0.0)
+        HourPrice(starttime=row[0], hourlyprice=float(row[1]) if row[1] else 0.0)
         for row in cheapest_rows
     ]
 
