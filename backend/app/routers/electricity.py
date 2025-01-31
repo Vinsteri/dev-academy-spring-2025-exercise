@@ -81,7 +81,8 @@ def get_daily_stats(db: Session = Depends(get_db)):
 @router.get("/daily-stats/{selected_date}", response_model=SingleDayView)
 def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
     # 1) Summaries
-    summary_sql = """
+    summary_sql = text(
+        """
         SELECT 
             date,
             SUM("consumptionamount") AS total_consumption,
@@ -91,7 +92,8 @@ def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
         WHERE date = :selected_date
         GROUP BY date
         LIMIT 1
-    """
+        """
+    )
 
     summary_row = db.execute(summary_sql, {"selected_date": selected_date}).fetchone()
     if not summary_row:
@@ -108,14 +110,16 @@ def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
     )
 
     # 2) Hour with max consumption-production difference
-    max_diff_sql = """
+    max_diff_sql = text(
+        """
         SELECT "starttime",
                ("consumptionamount" - "productionamount") AS diff
         FROM electricitydata
         WHERE date = :selected_date
         ORDER BY diff DESC NULLS LAST
         LIMIT 1
-    """
+        """
+    )
     max_diff_row = db.execute(max_diff_sql, {"selected_date": selected_date}).fetchone()
     maxConsumptionVsProduction = None
     if max_diff_row:
@@ -127,13 +131,15 @@ def get_single_day_view(selected_date: date, db: Session = Depends(get_db)):
         )
 
     # 3) Cheapest hours (top 3)
-    cheapest_sql = """
+    cheapest_sql = text(
+        """
         SELECT "starttime", "hourlyprice"
         FROM electricitydata
         WHERE date = :selected_date
         ORDER BY "hourlyprice" ASC NULLS LAST
         LIMIT 3
-    """
+        """
+    )
     cheapest_rows = db.execute(
         cheapest_sql, {"selected_date": selected_date}
     ).fetchall()

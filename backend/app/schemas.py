@@ -25,7 +25,7 @@ class SingleDayStat(BaseModel):
 
 
 class HourDetail(BaseModel):
-    startTime: datetime
+    starttime: datetime
     consumption_production_diff: float
 
     class Config:
@@ -33,8 +33,8 @@ class HourDetail(BaseModel):
 
 
 class HourPrice(BaseModel):
-    startTime: datetime
-    hourlyPrice: float
+    starttime: datetime
+    hourlyprice: float
 
     class Config:
         orm_mode = True
