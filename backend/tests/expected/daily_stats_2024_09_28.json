@@ -1,0 +1,19 @@
+{
+    "dailyStats": {
+      "date": "2024-09-28",
+      "total_consumption": 12345.678,
+      "total_production": 9876.543,
+      "average_price": 45.678
+    },
+    "maxConsumptionVsProduction": {
+      "startTime": "2024-09-28T13:00:00",
+      "consumption_production_diff": 456.78
+    },
+    "cheapestHours": [
+      {
+        "startTime": "2024-09-28T02:00:00",
+        "hourlyPrice": -0.1
+      }
+    ]
+  }
+  
