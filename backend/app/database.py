@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 from app.config import DATABASE_URL
+from app.logging import logger
 from contextlib import contextmanager
 
 
@@ -31,6 +32,7 @@ class DatabaseManager:
         try:
             yield session
         except Exception as e:
+            logger.error(f"Database error: {e}")
             session.rollback()
             raise
         finally:
