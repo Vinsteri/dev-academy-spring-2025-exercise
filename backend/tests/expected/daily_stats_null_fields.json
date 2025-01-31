@@ -1,0 +1,22 @@
+{
+    "dailyStats": {
+        "date": "2020-12-31",
+        "total_consumption": 0.0,
+        "total_production": 14044.0,
+        "average_price": 0.0
+    },
+    "maxConsumptionVsProduction": {
+        "starttime": "2020-12-31T22:00:00",
+        "consumption_production_diff": 0.0
+    },
+    "cheapestHours": [
+        {
+            "starttime": "2020-12-31T22:00:00",
+            "hourlyprice": 0.0
+        },
+        {
+            "starttime": "2020-12-31T23:00:00",
+            "hourlyprice": 0.0
+        }
+    ]
+}

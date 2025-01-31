@@ -1,0 +1,26 @@
+{
+    "dailyStats": {
+        "date": "2021-01-05",
+        "total_consumption": 0.0,
+        "total_production":  199488.0,
+        "average_price": 5.853833333333333
+    },
+    "maxConsumptionVsProduction": {
+        "starttime": "2021-01-05T00:00:00",
+        "consumption_production_diff": 0.0
+    },
+    "cheapestHours": [
+        {
+            "starttime": "2021-01-05T03:00:00",
+            "hourlyprice": 3.358
+        },
+        {
+            "starttime": "2021-01-05T04:00:00",
+            "hourlyprice": 3.365
+        },
+        {
+            "starttime": "2021-01-05T00:00:00",
+            "hourlyprice": 3.391
+        }
+    ]
+}

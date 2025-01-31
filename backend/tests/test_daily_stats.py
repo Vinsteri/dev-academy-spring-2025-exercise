@@ -61,3 +61,18 @@ def test_daily_stats_wrong_date():
     url = "http://localhost:8000/api/daily-stats/1024-09-29"
     expected_file = Path(__file__).parent / "expected" / "daily_stats_wrong_date.json"
     daily_stats_endpoint(url, expected_file)
+
+@pytest.mark.integration
+def test_daily_stats_null_fields():
+    """Test the /api/daily-stats/2020-12-31 endpoint response against an expected JSON file."""
+    url = "http://localhost:8000/api/daily-stats/2020-12-31"
+    expected_file = Path(__file__).parent / "expected" / "daily_stats_null_fields.json"
+    daily_stats_endpoint(url, expected_file)
+
+
+@pytest.mark.integration
+def test_daily_stats_unordered_table():
+    """Test the /api/daily-stats/2021-01-05 endpoint response against an expected JSON file."""
+    url = "http://localhost:8000/api/daily-stats/2021-01-05"
+    expected_file = Path(__file__).parent / "expected" / "daily_stats_unordered_table.json"
+    daily_stats_endpoint(url, expected_file)
