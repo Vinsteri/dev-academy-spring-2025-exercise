@@ -56,7 +56,7 @@ def get_daily_stats(db: Session = Depends(get_db)):
         FROM electricitydata d
         GROUP BY d.date
         ORDER BY d.date
-    """
+        """
     )
     rows = db.execute(raw_sql).fetchall()
 
