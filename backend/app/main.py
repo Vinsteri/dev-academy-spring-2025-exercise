@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.app.routers import electricity
+from app.routers import electricity
 
 
 app = FastAPI(title="Electricity Data API")
