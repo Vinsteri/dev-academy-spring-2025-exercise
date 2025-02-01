@@ -2,7 +2,7 @@
     "dailyStats": {
         "date": "2021-01-05",
         "total_consumption": 0.0,
-        "total_production":  199488.0,
+        "total_production": 199488.0,
         "average_price": 5.853833333333333
     },
     "maxConsumptionVsProduction": {

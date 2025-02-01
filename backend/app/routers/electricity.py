@@ -16,7 +16,12 @@ router = APIRouter()
 
 
 @router.get("/daily-stats", response_model=List[DailyStat])
-def get_daily_stats(search: Optional[str] = None, db: Session = Depends(get_db)):
+def get_daily_stats(
+    search: Optional[str] = None,
+    sort: str = "date",
+    direction: str = "asc",
+    db: Session = Depends(get_db),
+):
     """
     Returns a list of daily aggregated statistics:
       - total consumption
@@ -28,6 +33,18 @@ def get_daily_stats(search: Optional[str] = None, db: Session = Depends(get_db))
     search_condition = ""
     if search:
         search_condition = f'AND (d."date"::text LIKE :search OR d."consumptionamount"::text LIKE :search OR d."productionamount"::text LIKE :search OR d."hourlyprice"::text LIKE :search)'
+
+    valid_sort_columns = [
+        "date",
+        "total_consumption",
+        "total_production",
+        "average_price",
+        "longest_negative_price_streak",
+    ]
+    if sort not in valid_sort_columns:
+        sort = "date"
+    if direction not in ["asc", "desc"]:
+        direction = "asc"
 
     raw_sql = text(
         f"""
@@ -59,7 +76,7 @@ def get_daily_stats(search: Optional[str] = None, db: Session = Depends(get_db))
         FROM electricitydata d
         WHERE 1=1 {search_condition}
         GROUP BY d.date
-        ORDER BY d.date
+        ORDER BY {sort} {direction}
         """
     )
 

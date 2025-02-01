@@ -111,3 +111,24 @@ def test_daily_stats_search_19h_negative_streak():
         Path(__file__).parent / "expected" / "daily_stats_search_2023_10_15.json"
     )
     daily_stats_endpoint(url, expected_file)
+
+def test_daily_stats_sort_date_desc():
+    url = "http://localhost:8000/api/daily-stats?sort=date&direction=desc"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_sort_date_desc.json"
+    )
+    daily_stats_endpoint(url, expected_file)
+
+def test_daily_stats_search_jan_first_avg_price_asc():
+    url = "http://localhost:8000/api/daily-stats?&search=01-01&sort=average_price&direction=asc"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_search_jan_first_avg_price_asc.json"
+    )
+    daily_stats_endpoint(url, expected_file)
+
+def test_daily_stats_search_xmas_production_asc():
+    url = "http://localhost:8000/api/daily-stats?&search=12-24&sort=total_production&direction=asc"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_search_xmas_production_asc.json"
+    )
+    daily_stats_endpoint(url, expected_file)
