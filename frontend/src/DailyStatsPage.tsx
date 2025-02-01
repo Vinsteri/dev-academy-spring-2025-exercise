@@ -13,6 +13,7 @@ export interface DailyStat {
 
 const DailyStatsPage: React.FC = () => {
   const [stats, setStats] = useState<DailyStat[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -21,6 +22,7 @@ const DailyStatsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [pageSize] = useState(25);
 
   useEffect(() => {
     setLoading(true);
@@ -28,15 +30,16 @@ const DailyStatsPage: React.FC = () => {
 
     // Construct your query params (search, pagination, sorting) if needed
     const baseUrl = 'http://localhost:8000/api/daily-stats';
-    const url = `${baseUrl}?page=${currentPage}&sort=${sortColumn}&direction=${sortDirection}&search=${searchQuery}`;
+    const url = `${baseUrl}?page=${currentPage}&pageSize=${pageSize}&sort=${sortColumn}&direction=${sortDirection}&search=${searchQuery}`;
 
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch');
         return res.json();
       })
-      .then((data: DailyStat[]) => {
-        setStats(data);
+      .then((data) => {
+        setStats(data.results);
+        setTotalCount(data.total_count);
         setLoading(false);
       })
       .catch((err) => {
@@ -74,7 +77,7 @@ const DailyStatsPage: React.FC = () => {
       {!loading && !error && (
         <>
           <StatsList stats={stats} onSort={handleSort} sortColumn={sortColumn} sortDirection={sortDirection} />
-          <PaginationControls currentPage={currentPage} onPageChange={setCurrentPage} />
+          <PaginationControls currentPage={currentPage} numberOfPages={Math.ceil(totalCount / pageSize)} onPageChange={setCurrentPage} />
         </>
       )}
     </div>

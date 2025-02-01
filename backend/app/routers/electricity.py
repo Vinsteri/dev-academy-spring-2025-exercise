@@ -1,5 +1,6 @@
 from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from typing import List, Optional
@@ -14,8 +15,12 @@ from app.schemas import (
 
 router = APIRouter()
 
+class DailyStatsResponse(BaseModel):
+    total_count: int
+    results: List[DailyStat]
 
-@router.get("/daily-stats", response_model=List[DailyStat])
+
+@router.get("/daily-stats", response_model=DailyStatsResponse)
 def get_daily_stats(
     search: Optional[str] = None,
     sort: str = "date",
@@ -49,6 +54,14 @@ def get_daily_stats(
         direction = "asc"
 
     offset = (page - 1) * pageSize
+
+    count_sql = text(
+        f"""
+        SELECT COUNT(DISTINCT d.date)
+        FROM electricitydata d
+        WHERE 1=1 {search_condition}
+        """
+    )
 
     raw_sql = text(
         f"""
@@ -90,6 +103,7 @@ def get_daily_stats(
         "pageSize": pageSize,
         "offset": offset,
     }
+    total_count = db.execute(count_sql, params).scalar()
     rows = db.execute(raw_sql, params).fetchall()
 
     results = []
@@ -107,7 +121,7 @@ def get_daily_stats(
             }
         )
 
-    return results
+    return {"total_count": total_count, "results": results}
 
 
 @router.get("/daily-stats/{selected_date}", response_model=SingleDayView)

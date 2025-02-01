@@ -1,9 +1,12 @@
-[
-    {
-        "date": "2023-08-08",
-        "total_consumption": 106331254.315,
-        "total_production": 735816,
-        "average_price": -0.4355,
-        "longest_negative_price_streak": 24
-    }
-]
+{
+    "results": [
+        {
+            "date": "2023-08-08",
+            "total_consumption": 106331254.315,
+            "total_production": 735816,
+            "average_price": -0.4355,
+            "longest_negative_price_streak": 24
+        }
+    ],
+    "total_count": 1
+}

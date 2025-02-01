@@ -1,30 +1,33 @@
-[
-    {
-        "date": "2023-01-01",
-        "total_consumption": 0.0,
-        "total_production": 262005.0,
-        "average_price": 1.8675,
-        "longest_negative_price_streak": 0.0
-    },
-    {
-        "date": "2021-01-01",
-        "total_consumption": 0.0,
-        "total_production": 174115.0,
-        "average_price": 3.2584782608695653,
-        "longest_negative_price_streak": 0.0
-    },
-    {
-        "date": "2024-01-01",
-        "total_consumption": 204677528.598,
-        "total_production": 1072392.0,
-        "average_price": 5.5905,
-        "longest_negative_price_streak": 0.0
-    },
-    {
-        "date": "2022-01-01",
-        "total_consumption": 0.0,
-        "total_production": 202917.0,
-        "average_price": 9.88425,
-        "longest_negative_price_streak": 0.0
-    }
-]
+{
+    "results": [
+        {
+            "date": "2023-01-01",
+            "total_consumption": 0.0,
+            "total_production": 262005.0,
+            "average_price": 1.8675,
+            "longest_negative_price_streak": 0.0
+        },
+        {
+            "date": "2021-01-01",
+            "total_consumption": 0.0,
+            "total_production": 174115.0,
+            "average_price": 3.2584782608695653,
+            "longest_negative_price_streak": 0.0
+        },
+        {
+            "date": "2024-01-01",
+            "total_consumption": 204677528.598,
+            "total_production": 1072392.0,
+            "average_price": 5.5905,
+            "longest_negative_price_streak": 0.0
+        },
+        {
+            "date": "2022-01-01",
+            "total_consumption": 0.0,
+            "total_production": 202917.0,
+            "average_price": 9.88425,
+            "longest_negative_price_streak": 0.0
+        }
+    ],
+    "total_count": 4
+}

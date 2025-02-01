@@ -1,9 +1,12 @@
-[
-    {
-        "date": "2023-10-15",
-        "total_consumption": 120607558.77,
-        "total_production": 863471,
-        "average_price": -0.257375,
-        "longest_negative_price_streak": 19
-    }
-]
+{
+    "results": [
+        {
+            "date": "2023-10-15",
+            "total_consumption": 120607558.77,
+            "total_production": 863471,
+            "average_price": -0.257375,
+            "longest_negative_price_streak": 19
+        }
+    ],
+    "total_count": 1
+}
