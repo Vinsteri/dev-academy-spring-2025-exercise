@@ -2,7 +2,7 @@ from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from typing import List
+from typing import List, Optional
 from app.database import get_db
 from app.schemas import (
     DailyStat,
@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 @router.get("/daily-stats", response_model=List[DailyStat])
-def get_daily_stats(db: Session = Depends(get_db)):
+def get_daily_stats(search: Optional[str] = None, db: Session = Depends(get_db)):
     """
     Returns a list of daily aggregated statistics:
       - total consumption
@@ -24,10 +24,13 @@ def get_daily_stats(db: Session = Depends(get_db)):
       - average price
       - longest consecutive negative price streak
     """
-    # You can do this as a single SQL query or with a combination
-    # of SQLAlchemy queries. Below is a raw SQL approach:
+
+    search_condition = ""
+    if search:
+        search_condition = f'AND (d."date"::text LIKE :search OR d."consumptionamount"::text LIKE :search OR d."productionamount"::text LIKE :search OR d."hourlyprice"::text LIKE :search)'
+
     raw_sql = text(
-        """
+        f"""
         SELECT d.date,
                SUM(d."consumptionamount") AS total_consumption,
                SUM(d."productionamount") AS total_production,
@@ -54,11 +57,14 @@ def get_daily_stats(db: Session = Depends(get_db)):
                    ) y
                ) AS longest_negative_price_streak
         FROM electricitydata d
+        WHERE 1=1 {search_condition}
         GROUP BY d.date
         ORDER BY d.date
         """
     )
-    rows = db.execute(raw_sql).fetchall()
+
+    params = {"search": f"%{search}%"} if search else {}
+    rows = db.execute(raw_sql, params).fetchall()
 
     results = []
     for row in rows:

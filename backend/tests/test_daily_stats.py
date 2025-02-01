@@ -62,6 +62,7 @@ def test_daily_stats_wrong_date():
     expected_file = Path(__file__).parent / "expected" / "daily_stats_wrong_date.json"
     daily_stats_endpoint(url, expected_file)
 
+
 @pytest.mark.integration
 def test_daily_stats_null_fields():
     """Test the /api/daily-stats/2020-12-31 endpoint response against an expected JSON file."""
@@ -74,5 +75,25 @@ def test_daily_stats_null_fields():
 def test_daily_stats_unordered_table():
     """Test the /api/daily-stats/2021-01-05 endpoint response against an expected JSON file."""
     url = "http://localhost:8000/api/daily-stats/2021-01-05"
-    expected_file = Path(__file__).parent / "expected" / "daily_stats_unordered_table.json"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_unordered_table.json"
+    )
+    daily_stats_endpoint(url, expected_file)
+
+
+@pytest.mark.integration
+def test_daily_stats_search_no_result():
+    """Test the /api/daily-stats&search= endpoint response against an expected JSON file."""
+    url = "http://localhost:8000/api/daily-stats?&search=nonsense"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_empty_response.json"
+    )
+    daily_stats_endpoint(url, expected_file)
+
+
+def test_daily_stats_search_2024_09_28():
+    url = "http://localhost:8000/api/daily-stats?&search=2024-09-28"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_search_2024_09_28.json"
+    )
     daily_stats_endpoint(url, expected_file)
