@@ -9,7 +9,7 @@ class ElectricityData(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date)
-    startTime = Column(DateTime)
-    productionAmount = Column(Numeric(11, 5))
-    consumptionAmount = Column(Numeric(11, 3))
-    hourlyPrice = Column(Numeric(6, 3))
+    starttime = Column(DateTime)
+    productionamount = Column(Numeric(11, 5))
+    consumptionamount = Column(Numeric(11, 3))
+    hourlyprice = Column(Numeric(6, 3))
