@@ -1,6 +1,6 @@
 import React from 'react';
 import { DailyStat } from './DailyStatsPage';
-import { formatValue } from './utils';
+import { formatValue, formatWhtoMWh, formatkWhtoMWh, formatHours } from './utils';
 import './StatsList.css';
 
 interface StatsListProps {
@@ -42,10 +42,10 @@ const StatsList: React.FC<StatsListProps> = ({ stats, onSort, sortColumn, sortDi
           {stats.map((row) => (
             <tr key={row.date}>
               <td>{row.date}</td>
-              <td>{formatValue(row.total_consumption)} Mwh</td>
-              <td>{formatValue(row.total_production)} Mwh</td>
-              <td>{formatValue(row.average_price)} €/kwh</td>
-              <td>{formatValue(row.longest_negative_price_streak)} hrs</td>
+              <td>{formatWhtoMWh(row.total_consumption)} MWh</td>
+              <td>{formatkWhtoMWh(row.total_production)} MWh</td>
+              <td>{formatValue(row.average_price)} €/MWh</td>
+              <td>{formatHours(row.longest_negative_price_streak)} hrs</td>
             </tr>
           ))}
         </tbody>
@@ -55,10 +55,10 @@ const StatsList: React.FC<StatsListProps> = ({ stats, onSort, sortColumn, sortDi
         {stats.map((row) => (
           <div className="card" key={row.date}>
             <div><span>Date:</span> {row.date}</div>
-            <div><span>Consumption:</span> {formatValue(row.total_consumption)} Mwh</div>
-            <div><span>Production:</span> {formatValue(row.total_production)} Mwh</div>
-            <div><span>Avg Price:</span> {formatValue(row.average_price)} €/kwh</div>
-            <div><span>Neg. Streak (hrs):</span> {formatValue(row.longest_negative_price_streak)} hrs</div>
+            <div><span>Consumption:</span> {formatWhtoMWh(row.total_consumption)} Mwh</div>
+            <div><span>Production:</span> {formatkWhtoMWh(row.total_production)} Mwh</div>
+            <div><span>Avg Price:</span> {formatValue(row.average_price)} €/MWh</div>
+            <div><span>Neg. Streak (hrs):</span> {formatHours(row.longest_negative_price_streak)} hrs</div>
           </div>
         ))}
       </div>
