@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SearchAndFilter from './SearchAndFilter.tsx';
 import StatsList from './StatsList.tsx';
 import PaginationControls from './PaginationControls.tsx';
+import { Container, Typography } from '@mui/material';
 
 export interface DailyStat {
   date: string;
@@ -68,19 +69,28 @@ const DailyStatsPage: React.FC = () => {
   };
 
   return (
-    <div className="daily-stats-page">
+    <Container maxWidth="sm" sx={{ marginY: 4 }}>
       <SearchAndFilter onSearch={handleSearch} />
-      
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {loading && <Typography>Loading...</Typography>}
+      {error && <Typography color="error">{error}</Typography>}
 
       {!loading && !error && (
         <>
-          <StatsList stats={stats} onSort={handleSort} sortColumn={sortColumn} sortDirection={sortDirection} />
-          <PaginationControls currentPage={currentPage} numberOfPages={Math.ceil(totalCount / pageSize)} onPageChange={setCurrentPage} />
+          <StatsList 
+            stats={stats} 
+            onSort={handleSort} 
+            sortColumn={sortColumn} 
+            sortDirection={sortDirection} 
+          />
+          <PaginationControls
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            numberOfPages={Math.ceil(totalCount / pageSize)}
+          />
         </>
       )}
-    </div>
+    </Container>
   );
 };
 

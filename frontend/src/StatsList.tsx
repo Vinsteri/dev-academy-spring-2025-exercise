@@ -1,7 +1,8 @@
 import React from 'react';
 import { DailyStat } from './DailyStatsPage';
 import { formatValue, formatWhtoMWh, formatkWhtoMWh, formatHours } from './utils';
-import './StatsList.css';
+import { Table, TableHead, TableRow, TableCell, TableBody, Card, CardContent, Typography, useMediaQuery } from '@mui/material';
+
 
 interface StatsListProps {
   stats: DailyStat[];
@@ -11,57 +12,63 @@ interface StatsListProps {
 }
 
 const StatsList: React.FC<StatsListProps> = ({ stats, onSort, sortColumn, sortDirection }) => {
+  const isMobile = useMediaQuery('(max-width:600px)');
+
   return (
     <>
-      <table className="table-view">
-        <thead>
-          <tr>
-            <th onClick={() => onSort('date')}>
-              Date 
-              {sortColumn === 'date' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
-            </th>
-            <th onClick={() => onSort('total_consumption')}>
-              Consumption 
-              {sortColumn === 'total_consumption' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
-            </th>
-            <th onClick={() => onSort('total_production')}>
-              Production
-              {sortColumn === 'total_production' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
-            </th>
-            <th onClick={() => onSort('average_price')}>
-              Avg Price
-              {sortColumn === 'average_price' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
-            </th>
-            <th onClick={() => onSort('longest_negative_price_streak')}>
-              Neg. Streak (hrs)
-              {sortColumn === 'longest_negative_price_streak' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
+      {!isMobile ? (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell onClick={() => onSort('date')}>
+                Date 
+                {sortColumn === 'date' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
+              </TableCell>
+              <TableCell onClick={() => onSort('total_consumption')}>
+                Consumption 
+                {sortColumn === 'total_consumption' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
+              </TableCell>
+              <TableCell onClick={() => onSort('total_production')}>
+                Production
+                {sortColumn === 'total_production' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
+              </TableCell>
+              <TableCell onClick={() => onSort('average_price')}>
+                Avg Price
+                {sortColumn === 'average_price' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
+              </TableCell>
+              <TableCell onClick={() => onSort('longest_negative_price_streak')}>
+                Neg. Streak (hrs)
+                {sortColumn === 'longest_negative_price_streak' ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : null}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {stats.map((row) => (
+              <TableRow key={row.date}>
+                <TableCell>{row.date}</TableCell>
+                <TableCell>{formatWhtoMWh(row.total_consumption)} MWh</TableCell>
+                <TableCell>{formatkWhtoMWh(row.total_production)} MWh</TableCell>
+                <TableCell>{formatValue(row.average_price)} €/MWh</TableCell>
+                <TableCell>{formatHours(row.longest_negative_price_streak)} hrs</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <div className="card-view">
           {stats.map((row) => (
-            <tr key={row.date}>
-              <td>{row.date}</td>
-              <td>{formatWhtoMWh(row.total_consumption)} MWh</td>
-              <td>{formatkWhtoMWh(row.total_production)} MWh</td>
-              <td>{formatValue(row.average_price)} €/MWh</td>
-              <td>{formatHours(row.longest_negative_price_streak)} hrs</td>
-            </tr>
+            <Card key={row.date} sx={{ marginBottom: 2 }}>
+              <CardContent>
+                <Typography variant="h6">Date: {row.date}</Typography>
+                <Typography>Consumption: {formatWhtoMWh(row.total_consumption)} MWh</Typography>
+                <Typography>Production: {formatkWhtoMWh(row.total_production)} MWh</Typography>
+                <Typography>Avg Price: {formatValue(row.average_price)} €/MWh</Typography>
+                <Typography>Neg. Streak (hrs): {formatHours(row.longest_negative_price_streak)} hrs</Typography>
+              </CardContent>
+            </Card>
           ))}
-        </tbody>
-      </table>
-
-      <div className="card-view">
-        {stats.map((row) => (
-          <div className="card" key={row.date}>
-            <div><span>Date:</span> {row.date}</div>
-            <div><span>Consumption:</span> {formatWhtoMWh(row.total_consumption)} Mwh</div>
-            <div><span>Production:</span> {formatkWhtoMWh(row.total_production)} Mwh</div>
-            <div><span>Avg Price:</span> {formatValue(row.average_price)} €/MWh</div>
-            <div><span>Neg. Streak (hrs):</span> {formatHours(row.longest_negative_price_streak)} hrs</div>
-          </div>
-        ))}
-      </div>
+        </div>
+      )}
     </>
   );
 };

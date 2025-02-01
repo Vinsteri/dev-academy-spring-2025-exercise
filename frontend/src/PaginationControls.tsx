@@ -1,4 +1,5 @@
 import React from 'react';
+import { Pagination } from '@mui/material';
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -6,40 +7,26 @@ interface PaginationControlsProps {
   onPageChange: (page: number) => void;
 }
 
-const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, numberOfPages, onPageChange }) => {
-  const handleFirst = () => {
-    onPageChange(1);
+const PaginationControls: React.FC<PaginationControlsProps> = ({
+  currentPage,
+  onPageChange,
+  numberOfPages
+}) => {
+  // MUI Pagination calls onChange with event + pageNumber
+  const handleChange = (_: React.ChangeEvent<unknown>, page: number) => {
+    onPageChange(page);
   };
-  
-  const handlePrev = () => {
-    if (currentPage > 1) onPageChange(currentPage - 1);
-  };
-
-  const handleNext = () => {
-    if (currentPage < numberOfPages) onPageChange(currentPage + 1);
-  };
-
-  const handleLast = () => {
-    onPageChange(numberOfPages);
-  }
 
 
   return (
-    <div className="pagination-controls">
-      <button onClick={handleFirst} disabled={currentPage === 1}>
-        First
-      </button>
-      <button onClick={handlePrev} disabled={currentPage === 1}>
-        Prev
-      </button>
-      <span>Page {currentPage}</span>
-      <button onClick={handleNext} disabled={currentPage === numberOfPages}>
-        Next
-        </button>
-      <button onClick={handleLast} disabled={currentPage === numberOfPages}>
-        Last
-      </button>
-    </div>
+    <Pagination
+      count={numberOfPages}
+      page={currentPage}
+      onChange={handleChange}
+      sx={{ marginTop: 2, display: 'flex', justifyContent: 'center' }}
+      shape="rounded"        // optional styling
+      color="primary"        // sets the color to your theme primary
+    />
   );
 };
 
