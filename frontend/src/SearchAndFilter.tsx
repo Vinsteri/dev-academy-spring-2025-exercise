@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './SearchAndFilter.css';
 
 interface SearchAndFilterProps {
   onSearch: (query: string) => void;
@@ -16,7 +17,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({ onSearch }) => {
   };
 
   return (
-    <div className="search-and-filter">
+    <div className="search-and-filter sticky-top">
       <input
         type="text"
         placeholder="Search by date, e.g. 2025-01-01"

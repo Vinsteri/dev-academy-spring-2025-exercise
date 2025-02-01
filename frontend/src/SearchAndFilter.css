@@ -1,0 +1,21 @@
+/* Add this to your CSS file */
+.sticky-top {
+  position: static;
+  top: 0;
+  z-index: 1000; /* Ensure it stays above other content */
+  padding: 10px; /* Optional: Add some padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
+  display: flex; /* Use flexbox to align items horizontally */
+  align-items: center; /* Center items vertically */
+}
+
+.sticky-top input {
+  flex: 1; /* Allow input to take up remaining space */
+  margin-right: 10px; /* Optional: Add some margin between input and button */
+  padding: 8px; /* Optional: Add some padding inside the input */
+  box-sizing: border-box; /* Ensure padding is included in the width calculation */
+}
+
+.sticky-top button {
+  padding: 8px 16px; /* Optional: Add some padding inside the button */
+}
