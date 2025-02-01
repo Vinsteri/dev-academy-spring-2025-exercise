@@ -97,3 +97,17 @@ def test_daily_stats_search_2024_09_28():
         Path(__file__).parent / "expected" / "daily_stats_search_2024_09_28.json"
     )
     daily_stats_endpoint(url, expected_file)
+
+def test_daily_stats_search_24h_negative_streak():
+    url = "http://localhost:8000/api/daily-stats?&search=2023-08-08"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_search_2023_08_08.json"
+    )
+    daily_stats_endpoint(url, expected_file)
+
+def test_daily_stats_search_19h_negative_streak():
+    url = "http://localhost:8000/api/daily-stats?&search=2023-10-15"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_search_2023_10_15.json"
+    )
+    daily_stats_endpoint(url, expected_file)
