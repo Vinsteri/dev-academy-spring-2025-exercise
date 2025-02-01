@@ -20,14 +20,16 @@ def get_daily_stats(
     search: Optional[str] = None,
     sort: str = "date",
     direction: str = "asc",
+    page: int = 1,
+    pageSize: int = 9999,
     db: Session = Depends(get_db),
 ):
     """
     Returns a list of daily aggregated statistics:
-      - total consumption
-      - total production
-      - average price
-      - longest consecutive negative price streak
+      - total consumption (Mwh)
+      - total production (Mwh)
+      - average price (snt/kWh)
+      - longest consecutive negative price streak (hours)
     """
 
     search_condition = ""
@@ -45,6 +47,8 @@ def get_daily_stats(
         sort = "date"
     if direction not in ["asc", "desc"]:
         direction = "asc"
+
+    offset = (page - 1) * pageSize
 
     raw_sql = text(
         f"""
@@ -77,10 +81,15 @@ def get_daily_stats(
         WHERE 1=1 {search_condition}
         GROUP BY d.date
         ORDER BY {sort} {direction}
+        LIMIT :pageSize OFFSET :offset
         """
     )
 
-    params = {"search": f"%{search}%"} if search else {}
+    params = {
+        "search": f"%{search}%" if search else None,
+        "pageSize": pageSize,
+        "offset": offset,
+    }
     rows = db.execute(raw_sql, params).fetchall()
 
     results = []
@@ -89,11 +98,11 @@ def get_daily_stats(
         results.append(
             {
                 "date": row[0],
-                "total_consumption": float(row[1]) if row[1] is not None else 0.0,
-                "total_production": float(row[2]) if row[2] is not None else 0.0,
-                "average_price": float(row[3]) if row[3] is not None else 0.0,
+                "total_consumption": float(row[1]) if row[1] is not None else 0,
+                "total_production": float(row[2]) if row[2] is not None else 0,
+                "average_price": float(row[3]) if row[3] is not None else 0,
                 "longest_negative_price_streak": (
-                    float(row[4]) if row[4] is not None else 0.0
+                    float(row[4]) if row[4] is not None else 0
                 ),
             }
         )

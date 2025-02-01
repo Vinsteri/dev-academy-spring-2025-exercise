@@ -132,3 +132,24 @@ def test_daily_stats_search_xmas_production_asc():
         Path(__file__).parent / "expected" / "daily_stats_search_xmas_production_asc.json"
     )
     daily_stats_endpoint(url, expected_file)
+
+def test_daily_stats_10_first_results():
+    url = "http://localhost:8000/api/daily-stats?pageSize=10"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_10_first_results.json"
+    )
+    daily_stats_endpoint(url, expected_file)
+
+def test_daily_stats_next_10_results():
+    url = "http://localhost:8000/api/daily-stats?pageSize=10&page=2"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_next_10_results.json"
+    )
+    daily_stats_endpoint(url, expected_file)
+
+def test_daily_stats_last_results():
+    url = "http://localhost:8000/api/daily-stats?pageSize=10&page=138"
+    expected_file = (
+        Path(__file__).parent / "expected" / "daily_stats_last_results.json"
+    )
+    daily_stats_endpoint(url, expected_file)
