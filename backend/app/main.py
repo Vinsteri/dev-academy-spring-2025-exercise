@@ -7,7 +7,8 @@ app = FastAPI(title="Electricity Data API")
 
 
 origins = [
-    "http://localhost:5173",
+    "http://localhost:5173",    # for local development
+    "http://localhost:8080"     # when deployed as container
 ]
 
 app.add_middleware(

@@ -30,8 +30,8 @@ const DailyStatsPage: React.FC = () => {
     setError('');
 
     // Construct your query params (search, pagination, sorting) if needed
-    const baseUrl = 'http://localhost:8000/api/daily-stats';
-    const url = `${baseUrl}?page=${currentPage}&pageSize=${pageSize}&sort=${sortColumn}&direction=${sortDirection}&search=${searchQuery}`;
+    const baseUrl = import.meta.env.VITE_API_BASE_URL
+    const url = `${baseUrl}/api/daily-stats?page=${currentPage}&pageSize=${pageSize}&sort=${sortColumn}&direction=${sortDirection}&search=${searchQuery}`;
 
     fetch(url)
       .then((res) => {
@@ -77,11 +77,11 @@ const DailyStatsPage: React.FC = () => {
 
       {!loading && !error && (
         <>
-          <StatsList 
-            stats={stats} 
-            onSort={handleSort} 
-            sortColumn={sortColumn} 
-            sortDirection={sortDirection} 
+          <StatsList
+            stats={stats}
+            onSort={handleSort}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
           />
           <PaginationControls
             currentPage={currentPage}
