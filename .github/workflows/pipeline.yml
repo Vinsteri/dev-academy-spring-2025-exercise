@@ -22,19 +22,19 @@ jobs:
         uses: docker/setup-compose-action@v1
       
       - name: Compose build
-        run: docker-compose --file docker-compose.prod.yml build
+        run: docker compose --file docker-compose.prod.yml build
       
       - name: Compose up
-        run: docker-compose --file docker-compose.prod.yml up --renew-anon-volumes -d
+        run: docker compose --file docker-compose.prod.yml up --renew-anon-volumes -d
 
       - name: Wait 10 seconds
         run: sleep 10
       
       - name: Run tests
-        run: docker exec -it $(docker ps -q --filter ancestor=dev-academy-backend-1) pytest
+        run: docker exec $(docker ps -q --filter name=dev-academy-backend-1) pytest
 
       - name: Compose down
-        run: docker-compose --file docker-compose.prod.yml down
+        run: docker compose --file docker-compose.prod.yml down
 
       - name: Azure login
         uses: azure/login@v2
