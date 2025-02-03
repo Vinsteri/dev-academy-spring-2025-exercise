@@ -37,20 +37,20 @@ jobs:
         run: docker compose --file docker-compose.prod.yml down
 
       - name: Azure login
-        uses: azure/login@v2
+        uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Azure container registry login
-        run: az acr login --name ${{ secrets.AZURE_CONTAINER_REGISTRY }}
-
-      - name: push backend image
-        run: docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/samples/dev-academy-backend:latest
-      
-      - name: push frontend image
-        run: docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/samples/dev-academy-frontend:latest
-
-      - name: push db image
-        run: docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/samples/dev-academy-db:latest
+      - name: 'Login and push images'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker tag dev-academy-spring-2025-exercise-backend:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-backend:${{ github.sha }}
+          docker tag dev-academy-spring-2025-exercise-frontend:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-frontend:${{ github.sha }}
+          docker tag dev-academy-spring-2025-exercise-db:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-db:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-backend:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-frontend:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-db:${{ github.sha }}

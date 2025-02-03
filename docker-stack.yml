@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   db:
-    image: academy.azurecr.io/samples/dev-academy-db:latest
+    image: academy.azurecr.io/dev-academy-spring-2025-exercise-db:latest
     environment:
       POSTGRES_USER: academy
       POSTGRES_PASSWORD: academy
@@ -15,7 +15,7 @@ services:
       retries: 5
 
   backend:
-    image: academy.azurecr.io/samples/dev-academy-backend:latest
+    image: academy.azurecr.io/dev-academy-spring-2025-exercise-backend:latest
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
   frontend:
-    image: academy.azurecr.io/samples/dev-academy-frontend:latest
+    image: academy.azurecr.io/dev-academy-spring-2025-exercise-frontend:latest
     environment:
       VITE_API_BASE_URL: http://dev-academy.westeurope.cloudapp.azure.com
     ports:
