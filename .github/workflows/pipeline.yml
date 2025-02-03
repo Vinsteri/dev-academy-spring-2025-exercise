@@ -42,11 +42,11 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: 'Login and push images'
-          uses: azure/docker-login@v1
-          with:
-            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
           docker tag dev-academy-spring-2025-exercise-backend:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-backend:${{ github.sha }}
           docker tag dev-academy-spring-2025-exercise-frontend:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-frontend:${{ github.sha }}
