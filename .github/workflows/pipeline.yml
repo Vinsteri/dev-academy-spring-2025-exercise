@@ -12,7 +12,7 @@ permissions:
   packages: write
 
 jobs:
-  build-and-tests:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -48,9 +48,32 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker tag dev-academy-spring-2025-exercise-backend:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-backend:${{ github.sha }}
-          docker tag dev-academy-spring-2025-exercise-frontend:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-frontend:${{ github.sha }}
-          docker tag dev-academy-spring-2025-exercise-db:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-db:${{ github.sha }}
+          docker tag ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-backend:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-backend:${{ github.sha }}
+          docker tag ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-frontend:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-frontend:${{ github.sha }}
+          docker tag ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-db:latest ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-db:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-backend:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-frontend:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/dev-academy-spring-2025-exercise-db:${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: 
+      - build-and-test
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: create env file
+      run: |
+        echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
+
+    - name: Docker Stack Deploy
+      uses: cssnr/stack-deploy-action@v1
+      with: 
+        name: dev-academy
+        file: docker-stack.yml
+        host: ${{ secrets.AZURE_STACK_HOST }}
+        user: ${{ secrets.AZURE_STACK_USER }}
+        ssh_key: ${{ secrets.AZURE_STACK_SSH_KEY }}
+        env_file: ./envfile

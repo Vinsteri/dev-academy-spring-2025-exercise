@@ -1,7 +1,6 @@
-version: '3.1'
 services:
   db:
-    image: academy.azurecr.io/dev-academy-spring-2025-exercise-db:latest
+    image: academy.azurecr.io/dev-academy-spring-2025-exercise-db:${GIT_COMMIT_HASH:-latest}
     environment:
       POSTGRES_USER: academy
       POSTGRES_PASSWORD: academy
@@ -15,7 +14,7 @@ services:
       retries: 5
 
   backend:
-    image: academy.azurecr.io/dev-academy-spring-2025-exercise-backend:latest
+    image: academy.azurecr.io/dev-academy-spring-2025-exercise-backend:${GIT_COMMIT_HASH:-latest}
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
@@ -27,7 +26,7 @@ services:
     depends_on:
       - db
   frontend:
-    image: academy.azurecr.io/dev-academy-spring-2025-exercise-frontend:latest
+    image: academy.azurecr.io/dev-academy-spring-2025-exercise-frontend:${GIT_COMMIT_HASH:-latest}
     environment:
       VITE_API_BASE_URL: http://dev-academy.westeurope.cloudapp.azure.com
     ports:
