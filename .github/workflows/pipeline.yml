@@ -29,7 +29,13 @@ jobs:
 
       - name: Wait 10 seconds
         run: sleep 10
-      
+
+      - name: log docker ps
+        run: docker ps 
+
+      - name: log docker ps filter
+        run: docker ps -q --filter name=dev-academy-backend-1
+
       - name: Run tests
         run: docker exec $(docker ps -q --filter name=dev-academy-backend-1) pytest
 
