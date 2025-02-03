@@ -29,8 +29,7 @@ const DailyStatsPage: React.FC = () => {
     setLoading(true);
     setError('');
 
-    // Construct your query params (search, pagination, sorting) if needed
-    const baseUrl = import.meta.env.VITE_API_BASE_URL
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
     const url = `${baseUrl}/api/daily-stats?page=${currentPage}&pageSize=${pageSize}&sort=${sortColumn}&direction=${sortDirection}&search=${searchQuery}`;
 
     fetch(url)

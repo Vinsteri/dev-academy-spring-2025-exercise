@@ -16,6 +16,9 @@
     
     # Copy the rest of your app’s source code
     COPY . .
+
+    ARG VITE_API_BASE_URL
+    ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
     
     # Build the React + Vite app
     RUN npm run build
@@ -23,11 +26,12 @@
     # --------
     # Stage 2: Serve with Nginx
     # --------
-    FROM nginx:1.23-alpine
-    
+    FROM nginx:1.23-alpine as server-stage
+    COPY nginx.conf /etc/nginx/conf.d/default.conf
     # Copy built files from previous stage to Nginx html folder
     COPY --from=build /app/dist /usr/share/nginx/html
     
+   
     # Expose port 80 to the outside world
     EXPOSE 80
     

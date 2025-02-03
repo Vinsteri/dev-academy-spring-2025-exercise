@@ -1,0 +1,50 @@
+version: '3.1'
+services:
+  db:
+    image: academy.azurecr.io/samples/dev-academy-db:latest
+    restart: always
+    environment:
+      POSTGRES_USER: academy
+      POSTGRES_PASSWORD: academy
+      POSTGRES_DB: electricity
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "academy", "-d", "electricity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: academy.azurecr.io/samples/dev-academy-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: academy
+      POSTGRES_PASSWORD: academy
+      POSTGRES_DB: electricity
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: academy.azurecr.io/samples/dev-academy-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://dev-academy.westeurope.cloudapp.azure.com
+    environment:
+      VITE_API_BASE_URL: http://dev-academy.westeurope.cloudapp.azure.com
+    ports:
+      - 80:80
+    depends_on:
+      - backend
