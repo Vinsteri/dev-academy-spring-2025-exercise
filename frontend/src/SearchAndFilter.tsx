@@ -31,36 +31,31 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({ onSearch }) => {
         sx={{ 
           display: 'flex', 
           flexDirection: 'row', 
-          gap: 2 
+          gap: 2, 
+          justifyContent: 'space-between',
         }}
       >
         <TextField
-          label="Search by date (e.g., 2025-01-01)"
-          variant='filled'
+          label="Search by date (e.g., 2020-12-31)"
+          variant='standard'
           value={searchInput}
           onChange={handleSearchInput}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              handleSearchClick();
+            }
+          }}
+          sx={{ width: '80%' }}
         />
         <Button 
           variant="contained" 
           color="primary" 
           onClick={handleSearchClick}
+
         >
           Search
         </Button>
       </Box>
-
-      {/* Example of a filter select could go here 
-         <FormControl>
-           <InputLabel>Filter</InputLabel>
-           <Select
-             value={filterValue}
-             onChange={handleFilterChange}
-           >
-             <MenuItem value="all">All</MenuItem>
-             <MenuItem value="negative">Negative Price Only</MenuItem>
-           </Select>
-         </FormControl>
-      */}
     </Box>
   );
 };

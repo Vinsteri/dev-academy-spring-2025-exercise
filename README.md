@@ -45,11 +45,7 @@ Since the time was limited, I focused on implementing a working deployment with 
 - Most importantly dark mode ✔️
 
 ## things to improve
-- Search doesn't submit with enter key
-- Limit search to dates only
 - Read secretish values from environment variables
-- issue in the deployment where first query fails when loading the page for the first time.
-- Order negative streak column from 24 -> 0
 - Add ordering option to mobile card view
 
 # Instructions for running the project
