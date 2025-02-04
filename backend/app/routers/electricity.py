@@ -39,7 +39,7 @@ def get_daily_stats(
 
     search_condition = ""
     if search:
-        search_condition = f'AND (d."date"::text LIKE :search OR d."consumptionamount"::text LIKE :search OR d."productionamount"::text LIKE :search OR d."hourlyprice"::text LIKE :search)'
+        search_condition = f'AND (d."date"::text LIKE :search)'
 
     valid_sort_columns = [
         "date",
