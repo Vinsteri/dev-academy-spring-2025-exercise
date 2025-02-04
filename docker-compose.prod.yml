@@ -41,8 +41,6 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_BASE_URL: http://dev-academy.westeurope.cloudapp.azure.com
-    environment:
-      VITE_API_BASE_URL: http://dev-academy.westeurope.cloudapp.azure.com
     ports:
       - 80:80
     depends_on:

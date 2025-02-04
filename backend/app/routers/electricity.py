@@ -53,6 +53,7 @@ def get_daily_stats(
     if direction not in ["asc", "desc"]:
         direction = "asc"
 
+
     offset = (page - 1) * pageSize
 
     count_sql = text(
@@ -93,7 +94,7 @@ def get_daily_stats(
         FROM electricitydata d
         WHERE 1=1 {search_condition}
         GROUP BY d.date
-        ORDER BY {sort} {direction}
+        ORDER BY {sort} {direction} NULLS LAST
         LIMIT :pageSize OFFSET :offset
         """
     )
