@@ -1,74 +1,141 @@
 # dev-academy-spring-2025-exercise
 
-This is the pre-assignment for Solita Dev Academy Finland January 2025. But if you’re here just purely out of curiosity, feel free to snatch the idea and make your own app just for the fun of it!
+This is a submission to the pre-assignment for Solita Dev Academy Finland January 2025. The project involved creating a UI and a backend service to display data on electricity production, consumption, and prices.
 
-Let's imagine that you have received an interesting project offer to create a UI and a backend service for displaying data from electricity production, consumption and prices. 
-The exercise uses data that is owned by Fingrid and combines that with electricity price data from porssisahko.net. 
+The implementation utilized data provided by Fingrid, combined with electricity price data from Pörssisähkö.net. The goal was to design an intuitive and functional interface while ensuring efficient backend data handling to deliver real-time insights into the electricity market.
 
-# The exercise
-Create a web application that uses a backend service to fetch the data. Backend can be made with any technology. We at Solita use for example (not in preference order) Java/Kotlin/C#/TypeScript but you are free to choose any other technology as well. 
+The project was implemented using the following technologies:
+- Frontend: Vite, React, TypeScript, Material-UI, nginx (in deployment container).
+- Backend: FastAPI, SQLAlchemy, Uvicorn.
+- Database: PostgreSQL (provided with the assignment)
 
-You are provided with Docker setup, with contains a PostgreSQL database with all the necessary data for the exercise. 
+Project has live deployment at [http://dev-academy.westeurope.cloudapp.azure.com/](http://dev-academy.westeurope.cloudapp.azure.com/)
 
-You can also freely choose the frontend technologies to use. The important part is to give good instructions on how to build and run the project. 
+Deployment was done using Azure Container registry to Azure VM running docker swarm. CI/CD pipeline was implemented using GitHub Actions. CI/CD pipeline runs tests automatically and deploys the application with docker stack deploy.
 
-Please return the exercise as a link to github repository. 
+# List of features
 
-# Stuff to do 
+Since the time was limited, I focused on implementing getting a working deployment with a CI/CD pipeline rather than spending time polishing some parts of the implementation.  Implemented features are marked with a checkmark ✔️.
 
 ## Daily statistics list (recommended features)
-- Total electricity consumption per day 
-- Total electricity production per day 
-- Average electricity price per day 
-- Longest consecutive time in hours, when electricity price has been negative, per day 
+- Total electricity consumption per day ✔️
+- Total electricity production per day ✔️
+- Average electricity price per day ✔️
+- Longest consecutive time in hours, when electricity price has been negative, per day ✔️
 
 ## Additional features for daily statistics list
-- Pagination 
-- Ordering per column 
-- Searching 
-- Filtering 
+- Pagination ✔️
+- Ordering per column ✔️
+- Searching ✔️
+- Filtering ❌
 
 ## Other additional features
-- Single day view 
--- Total electricity consumption per day 
--- Total electricity production per day 
--- Average electricity price per day 
--- Hour with most electricity consumption compared to production 
--- Cheapest electricity hours for the day 
-- Graph visualisations 
+- Single day view ❌
+- Graph visualisations ❌
 
 ## Surprise us with 
-- Running backend in Docker 
-- Running backend in Cloud 
-- Implement E2E tests 
+- Running backend in Docker ✔️
+- Running backend in Cloud ✔️
+- API integration tests ✔️
+- Implement E2E tests ❌
+- Implement CI/CD pipeline ✔️
+    - Automated tests ✔️
+    - Build and push container's to Azure Container Registry ✔️
+    - Deployment to Azure with docker stack deploy✔️
+- Most importantly dark mode ✔️
 
-# Instructions for running the database
-1. Install Docker Desktop on your computer (https://docs.docker.com/desktop/)
-2. Clone this repository
-3. On command line under this folder run:
+# Instructions for running the project
 
+Project can be run locally with docker-compose or by running the backend and frontend separately. The project can also be deployed using docker stack deploy.
+
+prerequisite: 
+- Docker with docker-compose
+
+## Running the project with Docker locally
+
+1. Run docker compose in the root folder with following parameters:
+```bash
+docker-compose up --build --renew-anon-volumes -d
 ```
-docker compose up --build --renew-anon-volumes -d
+2. Open browser and navigate to http://localhost:8080
+
+3. (Optional) Backend tests can be run with:
+```bash
+docker exec $(docker ps -q --filter name=backend) pytest
 ```
 
-Please note that running that might take couple of minutes
+## Running the project locally for development
 
-4. Docker setup also comes with Adminer UI, where you can check your database contents at http://localhost:8088/
-5. Log into Adminer with following information (password: academy):
+To enable hot-reloading for the frontend and backend, each part of the project can be run separately.
 
-![alt text](login.png)
+### Launch only the db container with docker-compose
+Compose up only the db container with the following command:
+```bash
+docker-compose up -d --renew-anon-volumes db
+```
+You can include other services as like done above, for example adminer.
 
-Database is running at postgres://localhost:5432/electricity and the database name is electricity. Database comes with user academy (password: academy).
+### Running the backend
+The backend is python, so usign a virtual environment is recommended. Backend is developed and tested with python 3.10.12.
 
-# Database structure
-Database consists of one table electricityData.
+1. Install requirements
+```bash
+pip install -r requirements.txt
+```
 
-## ElectricityData table
-| Column | Description | Type |
-| ----------- | ----------- | ----------- |
-| id | id, primary key | integer |
-| date | date of the data point | DATE |
-| startTime | Starting time of the hour for the data point | TIMESTAMP |
-| productionAmount | Electricity production for the hour MWh/h | NUMERIC(11,5) *NULL* |
-| consumptionAmount | Electricity consumption for the hour kWh | NUMERIC(11,3) *NULL* |
-| hourlyPrice | Electricity price for the hour | NUMERIC(6,3) *NULL* |
+2. Launch the backend with uvicorn
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### Running the frontend
+The frontend is developed with Vite and React. Node.js is required to run the frontend.
+
+1. Install dependencies
+```bash
+npm install
+```
+
+2. Launch the frontend development server and navigate the address shown in the terminal
+```bash
+npm run dev
+```
+
+## Deploying the project to cloud
+
+### Prerequisites
+- Docker and docker-compose
+- ssh access to a server with docker and docker swarm (run `docker swarm init`) and server needs to have port 80 open and have a public IP address
+- Azure Container Registry with public pull access
+
+
+
+1. Build images locally
+```bash
+docker-compose --file docker-compose.prod.yml build
+```
+
+2. Push the built images to Azure Container Registry
+```bash
+docker login <azure-container-registry-url>
+
+docker push <azure-container-registry-url>/dev-academy-spring-2025-exercise-frontend:latest
+... and so on 
+```
+
+3. Set up docker context to the server
+```bash
+docker context create \
+    --docker host=ssh://<user>@<hostname/ip>\
+    <name-for-context>
+```
+
+4. Activate the docker context
+```bash
+docker context use <name-for-context>
+```
+
+5. Deploy the stack to the server
+```bash
+docker stack deploy -c docker-stack.yml <stack-name>
+```
