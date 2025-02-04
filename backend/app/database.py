@@ -1,3 +1,5 @@
+import time
+import sys
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
@@ -9,18 +11,24 @@ from contextlib import contextmanager
 # db manager class
 class DatabaseManager:
     def __init__(self, database_url: str):
+        self.database_url = database_url
         self.engine = create_engine(database_url, echo=False)
         self.sessionmaker = sessionmaker(
             autocommit=False, autoflush=False, bind=self.engine
         )
         self.check_database_availability()
 
-    def check_database_availability(self):
-        try:
-            with self.engine.connect() as connection:
-                connection.execute(text("SELECT 1"))
-        except OperationalError:
-            raise Exception("Database is not available, is the db container running?")
+    def check_database_availability(self, retries=5, delay=2):
+        for attempt in range(retries):
+            try:
+                with self.engine.connect() as connection:
+                    connection.execute(text("SELECT 1"))
+                return
+            except OperationalError:
+                logger.warning(f"Database connection failed. Retrying {attempt + 1}/{retries}...")
+                time.sleep(delay)
+        logger.error("Database is not available after multiple attempts, exiting...")
+        sys.exit(1)
 
     @contextmanager
     def get_session(self):
