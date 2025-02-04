@@ -15,7 +15,7 @@ Deployment was done using Azure Container registry to Azure VM running docker sw
 
 # List of features
 
-Since the time was limited, I focused on implementing getting a working deployment with a CI/CD pipeline rather than spending time polishing some parts of the implementation.  Implemented features are marked with a checkmark ✔️.
+Since the time was limited, I focused on implementing a working deployment with a CI/CD pipeline rather than spending time polishing specific parts of the code.  Implemented features are marked with a checkmark ✔️.
 
 ## Daily statistics list (recommended features)
 - Total electricity consumption per day ✔️
@@ -44,6 +44,14 @@ Since the time was limited, I focused on implementing getting a working deployme
     - Deployment to Azure with docker stack deploy✔️
 - Most importantly dark mode ✔️
 
+## things to improve
+- Search doesn't submit with enter key
+- Limit search to dates only
+- Read secretish values from environment variables
+- issue in the deployment where first query fails when loading the page for the first time.
+- Order negative streak column from 24 -> 0
+- Add ordering option to mobile card view
+
 # Instructions for running the project
 
 Project can be run locally with docker-compose or by running the backend and frontend separately. The project can also be deployed using docker stack deploy.
@@ -55,7 +63,7 @@ prerequisite:
 
 1. Run docker compose in the root folder with following parameters:
 ```bash
-docker-compose up --build --renew-anon-volumes -d
+docker compose up --build --renew-anon-volumes -d
 ```
 2. Open browser and navigate to http://localhost:8080
 
@@ -71,12 +79,20 @@ To enable hot-reloading for the frontend and backend, each part of the project c
 ### Launch only the db container with docker-compose
 Compose up only the db container with the following command:
 ```bash
-docker-compose up -d --renew-anon-volumes db
+docker compose up -d --renew-anon-volumes db
 ```
-You can include other services as like done above, for example adminer.
+You can include other services like done above, for example adminer.
 
 ### Running the backend
-The backend is python, so usign a virtual environment is recommended. Backend is developed and tested with python 3.10.12.
+The backend runs on python. Usign a virtual environment is recommended. Backend is developed and tested with python 3.10.12.
+
+run all commands inside the backend folder.
+
+example with of creating venv and activating it:
+```bash
+python -m venv venv
+source venv/bin/activate
+```
 
 1. Install requirements
 ```bash
@@ -90,6 +106,8 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 ### Running the frontend
 The frontend is developed with Vite and React. Node.js is required to run the frontend.
+
+run all commands inside the frontend folder.
 
 1. Install dependencies
 ```bash
@@ -112,7 +130,7 @@ npm run dev
 
 1. Build images locally
 ```bash
-docker-compose --file docker-compose.prod.yml build
+docker compose --file docker-compose.prod.yml build
 ```
 
 2. Push the built images to Azure Container Registry
