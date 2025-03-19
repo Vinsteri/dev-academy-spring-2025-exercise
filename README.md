@@ -9,7 +9,7 @@ The project was implemented using the following technologies:
 - Backend: FastAPI, SQLAlchemy, Uvicorn.
 - Database: PostgreSQL (provided with the assignment)
 
-Project has live deployment at [http://dev-academy.westeurope.cloudapp.azure.com/](http://dev-academy.westeurope.cloudapp.azure.com/)
+Project had live deployment (closed).
 
 Deployment was done using Azure Container registry to Azure VM running docker swarm. CI/CD pipeline was implemented using GitHub Actions. CI/CD pipeline runs tests automatically and deploys the application with docker stack deploy.
 
